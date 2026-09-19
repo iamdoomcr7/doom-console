@@ -43,6 +43,20 @@
             --user-msg-border: rgba(16, 185, 129, 0.4);
         }
 
+        body.theme-dark {
+            --bg-primary: #090a0f;
+            --bg-secondary: #12131c;
+            --bg-card: #181a26;
+            --bg-input: #202333;
+            --border-color: rgba(99, 102, 241, 0.3);
+            --accent-color: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.18);
+            --text-primary: #f1f5f9;
+            --text-accent: #818cf8;
+            --user-msg-bg: rgba(49, 46, 129, 0.6);
+            --user-msg-border: rgba(99, 102, 241, 0.4);
+        }
+
         body.theme-amber {
             --bg-primary: #0f0a05;
             --bg-secondary: #171008;
@@ -246,10 +260,11 @@
                     <label class="block text-[10px] font-bold theme-text-accent uppercase font-mono mb-1.5">Console Theme</label>
                     <div class="grid grid-cols-2 gap-1.5 text-xs">
                         <button onclick="setTheme('emerald')" class="p-1.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-[10px] font-mono text-left">Emerald</button>
+                        <button onclick="setTheme('dark')" class="p-1.5 rounded bg-indigo-950/60 border border-indigo-500/40 text-indigo-400 text-[10px] font-mono text-left">Dark Mode 🌙</button>
                         <button onclick="setTheme('amber')" class="p-1.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-400 text-[10px] font-mono text-left">Amber</button>
                         <button onclick="setTheme('matrix')" class="p-1.5 rounded bg-green-950/60 border border-green-500/40 text-green-400 text-[10px] font-mono text-left">Matrix</button>
                         <button onclick="setTheme('dracula')" class="p-1.5 rounded bg-purple-950/60 border border-purple-500/40 text-purple-400 text-[10px] font-mono text-left">Dracula</button>
-                        <button onclick="setTheme('light')" class="p-1.5 rounded bg-slate-200 border border-slate-400 text-slate-800 text-[10px] font-mono text-left col-span-2">Light Mode ☀️</button>
+                        <button onclick="setTheme('light')" class="p-1.5 rounded bg-slate-200 border border-slate-400 text-slate-800 text-[10px] font-mono text-left">Light Mode ☀️</button>
                     </div>
                 </div>
 
@@ -979,4 +994,3 @@
     </script>
 </body>
 </html>
-
