@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>D.o.o.m - Mobile Console</title>
+    
+    <!-- PWA Installation Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="D.o.o.m">
+    <meta name="theme-color" content="#06090e">
+    
+    <!-- Embedded PWA Manifest -->
+    <link rel="manifest" href="data:application/manifest+json;utf8,%7B%22name%22%3A%22D.o.o.m%20Console%22%2C%22short_name%22%3A%22D.o.o.m%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2306090e%22%2C%22theme_color%22%3A%22%2306090e%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F6188%2F6188613.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fcdn-icons-png.flaticon.com%2F512%2F6188%2F6188613.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -124,14 +135,6 @@
             font-family: 'JetBrains Mono', monospace;
             background: #141414 !important;
         }
-
-        .cursor-blink::after {
-            content: '█';
-            animation: blink 1s infinite;
-            color: var(--accent-color);
-            margin-left: 2px;
-        }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
 </head>
 <body class="h-[100dvh] flex flex-col overflow-hidden">
@@ -140,7 +143,7 @@
     <header class="border-b border-white/10 bg-[#090e15] px-3 py-2 flex flex-col space-y-1.5 z-20 flex-shrink-0">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2">
-                <button onclick="vibrate(10); toggleSidebar()" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-emerald-400 active:scale-95 flex items-center justify-center transition">
+                <button onclick="toggleSidebar()" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-emerald-400 active:scale-95 flex items-center justify-center transition">
                     <i class="fa-solid fa-bars text-sm"></i>
                 </button>
                 <div class="flex items-center space-x-2">
@@ -155,17 +158,14 @@
             </div>
 
             <div class="flex items-center space-x-1.5">
-                <button onclick="vibrate(10); toggleCommandPalette()" title="Command Palette (Ctrl+K)" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-emerald-400 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-terminal"></i>
+                <button id="pwa-install-btn" onclick="installPWA()" class="hidden px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-mono flex items-center space-x-1 theme-glow active:scale-95 transition">
+                    <i class="fa-solid fa-download text-[10px]"></i>
+                    <span>Install</span>
                 </button>
-                <button id="v2v-toggle" onclick="vibrate(10); toggleVoiceToVoice()" title="Voice-to-Voice Mode" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-gray-500 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-[#000]"></i>
-                    <i class="fa-solid fa-headset"></i>
-                </button>
-                <button id="tts-toggle" onclick="vibrate(10); toggleTTS()" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-emerald-400 flex items-center justify-center text-xs">
+                <button id="tts-toggle" onclick="toggleTTS()" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-emerald-400 flex items-center justify-center text-xs">
                     <i class="fa-solid fa-volume-high"></i>
                 </button>
-                <button onclick="vibrate(10); toggleConfigModal()" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-700/50 text-emerald-300 text-xs font-mono flex items-center space-x-1">
+                <button onclick="toggleConfigModal()" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-700/50 text-emerald-300 text-xs font-mono flex items-center space-x-1">
                     <i class="fa-solid fa-sliders text-[10px]"></i>
                     <span>Config</span>
                 </button>
@@ -201,7 +201,7 @@
             </div>
 
             <div class="p-3 space-y-4 overflow-y-auto flex-1">
-                <button onclick="vibrate(15); createNewChat()" class="w-full py-2.5 px-3 rounded-lg bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center justify-center space-x-2 transition active:scale-95 theme-glow">
+                <button onclick="createNewChat()" class="w-full py-2.5 px-3 rounded-lg bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center justify-center space-x-2 transition active:scale-95 theme-glow">
                     <i class="fa-solid fa-plus"></i>
                     <span>New Session</span>
                 </button>
@@ -214,26 +214,25 @@
                 <div>
                     <label class="block text-[10px] font-bold text-emerald-500/80 uppercase font-mono mb-1.5">Console Theme</label>
                     <div class="grid grid-cols-2 gap-1.5 text-xs">
-                        <button onclick="vibrate(10); setTheme('emerald')" class="p-1.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-[10px] font-mono text-left">Emerald</button>
-                        <button onclick="vibrate(10); setTheme('amber')" class="p-1.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-400 text-[10px] font-mono text-left">Amber</button>
-                        <button onclick="vibrate(10); setTheme('matrix')" class="p-1.5 rounded bg-green-950/60 border border-green-500/40 text-green-400 text-[10px] font-mono text-left">Matrix</button>
-                        <button onclick="vibrate(10); setTheme('dracula')" class="p-1.5 rounded bg-purple-950/60 border border-purple-500/40 text-purple-400 text-[10px] font-mono text-left">Dracula</button>
+                        <button onclick="setTheme('emerald')" class="p-1.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-[10px] font-mono text-left">Emerald</button>
+                        <button onclick="setTheme('amber')" class="p-1.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-400 text-[10px] font-mono text-left">Amber</button>
+                        <button onclick="setTheme('matrix')" class="p-1.5 rounded bg-green-950/60 border border-green-500/40 text-green-400 text-[10px] font-mono text-left">Matrix</button>
+                        <button onclick="setTheme('dracula')" class="p-1.5 rounded bg-purple-950/60 border border-purple-500/40 text-purple-400 text-[10px] font-mono text-left">Dracula</button>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-bold text-emerald-500/80 uppercase font-mono mb-1.5">Quick Prompts</label>
                     <div class="space-y-1">
-                        <button onclick="vibrate(10); loadTemplate('gen_image')" class="w-full text-left p-2 rounded bg-[#0d1520] border border-white/5 text-xs text-emerald-300 truncate"><i class="fa-solid fa-image mr-1"></i>Generate Cyberpunk Art</button>
-                        <button onclick="vibrate(10); loadTemplate('architecture')" class="w-full text-left p-2 rounded bg-[#0d1520] border border-white/5 text-xs text-gray-300 truncate">System Architecture</button>
-                        <button onclick="vibrate(10); loadTemplate('debug')" class="w-full text-left p-2 rounded bg-[#0d1520] border border-white/5 text-xs text-gray-300 truncate">Root Cause Debugger</button>
-                        <button onclick="vibrate(10); loadTemplate('sandbox')" class="w-full text-left p-2 rounded bg-[#0d1520] border border-white/5 text-xs text-amber-300 truncate"><i class="fa-solid fa-code mr-1"></i>JS Sandbox Code Example</button>
+                        <button onclick="loadTemplate('gen_image')" class="w-full text-left p-2 rounded bg-[#0d1520] border border-white/5 text-xs text-emerald-300 truncate"><i class="fa-solid fa-image mr-1"></i>Generate Cyberpunk Art</button>
+                        <button onclick="loadTemplate('architecture')" class="w-full text-left p-2 rounded bg-[#0d1520] border border-white/5 text-xs text-gray-300 truncate">System Architecture</button>
+                        <button onclick="loadTemplate('debug')" class="w-full text-left p-2 rounded bg-[#0d1520] border border-white/5 text-xs text-gray-300 truncate">Root Cause Debugger</button>
                     </div>
                 </div>
             </div>
 
             <div class="p-3 border-t border-white/10 bg-[#06090e] space-y-2">
-                <button onclick="vibrate([30, 50, 30]); rebootMemory()" class="w-full py-1.5 rounded bg-red-950/40 border border-red-800/40 text-red-400 text-xs flex items-center justify-center space-x-1.5 active:scale-95 transition">
+                <button onclick="rebootMemory()" class="w-full py-1.5 rounded bg-red-950/40 border border-red-800/40 text-red-400 text-xs flex items-center justify-center space-x-1.5 active:scale-95 transition">
                     <i class="fa-solid fa-rotate-right text-[10px]"></i>
                     <span>Reboot Memory</span>
                 </button>
@@ -253,11 +252,11 @@
                 </div>
                 
                 <div class="flex items-center space-x-2 flex-shrink-0">
-                    <button onclick="vibrate(10); clearCurrentChat()" class="px-2.5 py-1 rounded bg-red-950/50 border border-red-800/50 text-red-300 hover:bg-red-900/60 active:scale-95 text-[11px] font-mono flex items-center space-x-1 transition">
+                    <button onclick="clearCurrentChat()" class="px-2.5 py-1 rounded bg-red-950/50 border border-red-800/50 text-red-300 hover:bg-red-900/60 active:scale-95 text-[11px] font-mono flex items-center space-x-1 transition">
                         <i class="fa-solid fa-broom text-[10px]"></i>
                         <span>Clear</span>
                     </button>
-                    <button onclick="vibrate(10); exportChatLog()" class="px-2.5 py-1 rounded bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 hover:bg-emerald-900/60 active:scale-95 text-[11px] font-mono flex items-center space-x-1 transition">
+                    <button onclick="exportChatLog()" class="px-2.5 py-1 rounded bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 hover:bg-emerald-900/60 active:scale-95 text-[11px] font-mono flex items-center space-x-1 transition">
                         <i class="fa-solid fa-file-export text-[10px]"></i>
                         <span>Export</span>
                     </button>
@@ -271,7 +270,7 @@
                     <div class="bg-[#0b121a] border border-white/10 rounded-xl p-3 text-xs text-gray-300 space-y-1.5 theme-glow">
                         <p class="font-semibold text-emerald-400 font-mono text-[11px]">MOBILE CONSOLE ONLINE</p>
                         <p>Welcome. I am <span class="doom-highlight">D.o.o.m</span>, created by <span class="font-mono text-emerald-300 font-bold">Atharva</span>.</p>
-                        <p class="text-[11px] text-gray-400"><i class="fa-solid fa-bolt text-emerald-400 mr-1"></i>Supports real-time text streaming, PDFs, JS Sandbox, & Haptics!</p>
+                        <p class="text-[11px] text-gray-400"><i class="fa-solid fa-paperclip text-emerald-400 mr-1"></i>Attach PDFs/Files, generate images, or ask questions!</p>
                     </div>
                 </div>
             </div>
@@ -297,43 +296,22 @@
                     <input type="file" id="file-input" class="hidden" accept=".pdf,.txt,.json,.js,.py,.csv" onchange="handleFileSelect(event)">
 
                     <div class="absolute right-2 flex items-center space-x-1">
-                        <button onclick="vibrate(10); document.getElementById('file-input').click()" title="Attach File/PDF" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-800/60 text-emerald-400 flex items-center justify-center text-xs">
+                        <button onclick="triggerHaptic(); document.getElementById('file-input').click()" title="Attach File/PDF" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-800/60 text-emerald-400 flex items-center justify-center text-xs">
                             <i class="fa-solid fa-paperclip"></i>
                         </button>
-                        <button id="img-mode-btn" onclick="vibrate(10); toggleImageMode()" title="Generate Image" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-800/60 text-emerald-400 flex items-center justify-center text-xs">
+                        <button id="img-mode-btn" onclick="triggerHaptic(); toggleImageMode()" title="Generate Image" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-800/60 text-emerald-400 flex items-center justify-center text-xs">
                             <i class="fa-solid fa-image"></i>
                         </button>
-                        <button id="mic-btn" onclick="vibrate(15); toggleVoiceInput()" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-700/50 text-emerald-400 flex items-center justify-center text-xs">
+                        <button id="mic-btn" onclick="triggerHaptic(); toggleVoiceInput()" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-700/50 text-emerald-400 flex items-center justify-center text-xs">
                             <i id="mic-icon" class="fa-solid fa-microphone"></i>
                         </button>
-                        <button onclick="vibrate(20); handleSend()" class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs theme-glow">
+                        <button onclick="triggerHaptic(); handleSend()" class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs theme-glow">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
             </div>
         </main>
-    </div>
-
-    <!-- Command Palette Modal -->
-    <div id="command-palette-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xs hidden flex items-start justify-center z-50 pt-16 p-3">
-        <div class="bg-[#0c131d] border border-emerald-600/50 rounded-xl w-full max-w-sm p-3 space-y-2 theme-glow text-xs shadow-2xl">
-            <div class="flex items-center space-x-2 border-b border-white/10 pb-2">
-                <i class="fa-solid fa-terminal text-emerald-400"></i>
-                <input id="cmd-input" type="text" placeholder="Type a command..." class="w-full bg-transparent text-gray-200 focus:outline-none font-mono text-xs" onkeyup="filterCommands()">
-                <button onclick="toggleCommandPalette()" class="text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="cmd-list" class="space-y-1 max-h-56 overflow-y-auto">
-                <button onclick="runCommand('theme_emerald')" class="w-full text-left p-2 rounded hover:bg-emerald-950/60 text-emerald-300 font-mono text-xs flex justify-between"><span>Switch Theme: Emerald</span><span class="text-gray-500">Theme</span></button>
-                <button onclick="runCommand('theme_amber')" class="w-full text-left p-2 rounded hover:bg-emerald-950/60 text-amber-300 font-mono text-xs flex justify-between"><span>Switch Theme: Amber</span><span class="text-gray-500">Theme</span></button>
-                <button onclick="runCommand('theme_matrix')" class="w-full text-left p-2 rounded hover:bg-emerald-950/60 text-green-300 font-mono text-xs flex justify-between"><span>Switch Theme: Matrix</span><span class="text-gray-500">Theme</span></button>
-                <button onclick="runCommand('theme_dracula')" class="w-full text-left p-2 rounded hover:bg-emerald-950/60 text-purple-300 font-mono text-xs flex justify-between"><span>Switch Theme: Dracula</span><span class="text-gray-500">Theme</span></button>
-                <button onclick="runCommand('new_session')" class="w-full text-left p-2 rounded hover:bg-emerald-950/60 text-gray-200 font-mono text-xs flex justify-between"><span>Create New Session</span><span class="text-gray-500">Chat</span></button>
-                <button onclick="runCommand('clear_chat')" class="w-full text-left p-2 rounded hover:bg-emerald-950/60 text-red-300 font-mono text-xs flex justify-between"><span>Clear Current Chat</span><span class="text-gray-500">Action</span></button>
-                <button onclick="runCommand('toggle_image')" class="w-full text-left p-2 rounded hover:bg-emerald-950/60 text-gray-200 font-mono text-xs flex justify-between"><span>Toggle Image Mode</span><span class="text-gray-500">Mode</span></button>
-                <button onclick="runCommand('export_chat')" class="w-full text-left p-2 rounded hover:bg-emerald-950/60 text-emerald-400 font-mono text-xs flex justify-between"><span>Export Chat Log</span><span class="text-gray-500">Data</span></button>
-            </div>
-        </div>
     </div>
 
     <!-- Config Modal -->
@@ -361,7 +339,7 @@
 
             <div class="flex justify-between items-center pt-2 border-t border-white/10">
                 <a href="https://console.groq.com/keys" target="_blank" class="text-emerald-400 underline text-[11px]">Get Free Key</a>
-                <button onclick="vibrate(20); saveConfig()" class="px-3 py-1 rounded bg-emerald-600 text-white text-xs font-medium theme-glow">
+                <button onclick="saveConfig()" class="px-3 py-1 rounded bg-emerald-600 text-white text-xs font-medium theme-glow">
                     Save Changes
                 </button>
             </div>
@@ -380,14 +358,46 @@
         ];
         let activeChatId = conversations[0].id;
         let ttsEnabled = true;
-        let v2vMode = false;
         let isImageMode = false;
         let currentAttachment = null;
         let recognition = null;
         let isListening = false;
+        let deferredPrompt = null;
 
-        function vibrate(ms) {
-            if ('vibrate' in navigator) navigator.vibrate(ms);
+        // Register Service Worker for PWA compliance
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                self.addEventListener('install', (e) => self.skipWaiting());
+                self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+                self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));
+            `;
+            const blob = new Blob([swCode], { type: 'text/javascript' });
+            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+        }
+
+        // PWA Install Prompt Listener
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('pwa-install-btn');
+            if (btn) btn.classList.remove('hidden');
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                    document.getElementById('pwa-install-btn').classList.add('hidden');
+                });
+            }
+        }
+
+        function triggerHaptic(type = 'light') {
+            if ('vibrate' in navigator) {
+                if (type === 'light') navigator.vibrate(12);
+                else if (type === 'success') navigator.vibrate([10, 30, 20]);
+            }
         }
 
         // Visual Viewport Keyboard Adjustment for Mobile Devices
@@ -419,10 +429,11 @@
             setTimeout(() => {
                 const chatStream = document.getElementById('chat-stream');
                 if (chatStream) chatStream.scrollTop = chatStream.scrollHeight;
-            }, 50);
+            }, 100);
         }
 
         function toggleSidebar() {
+            triggerHaptic();
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
             const isOpen = !sidebar.classList.contains('-translate-x-full');
@@ -439,42 +450,8 @@
             document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none');
         }
 
-        function toggleCommandPalette() {
-            const modal = document.getElementById('command-palette-modal');
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                document.getElementById('cmd-input').focus();
-            }
-        }
-
-        function filterCommands() {
-            const q = document.getElementById('cmd-input').value.toLowerCase();
-            const btns = document.querySelectorAll('#cmd-list button');
-            btns.forEach(b => {
-                b.style.display = b.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
-            });
-        }
-
-        function runCommand(cmd) {
-            toggleCommandPalette();
-            if (cmd === 'theme_emerald') setTheme('emerald');
-            else if (cmd === 'theme_amber') setTheme('amber');
-            else if (cmd === 'theme_matrix') setTheme('matrix');
-            else if (cmd === 'theme_dracula') setTheme('dracula');
-            else if (cmd === 'new_session') createNewChat();
-            else if (cmd === 'clear_chat') clearCurrentChat();
-            else if (cmd === 'toggle_image') toggleImageMode();
-            else if (cmd === 'export_chat') exportChatLog();
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                toggleCommandPalette();
-            }
-        });
-
         function setTheme(theme) {
+            triggerHaptic();
             document.body.className = theme === 'emerald' ? 'h-[100dvh] flex flex-col overflow-hidden' : `h-[100dvh] flex flex-col overflow-hidden theme-${theme}`;
             localStorage.setItem('doom_theme', theme);
         }
@@ -490,20 +467,6 @@
             } else {
                 badge.classList.add('hidden');
                 btn.classList.remove('bg-emerald-600', 'text-white');
-            }
-        }
-
-        function toggleVoiceToVoice() {
-            v2vMode = !v2vMode;
-            const btn = document.getElementById('v2v-toggle');
-            if (v2vMode) {
-                btn.classList.remove('text-gray-500');
-                btn.classList.add('text-amber-400', 'border-amber-500/50');
-                ttsEnabled = true;
-                document.getElementById('tts-toggle').classList.add('text-emerald-400');
-            } else {
-                btn.classList.add('text-gray-500');
-                btn.classList.remove('text-amber-400', 'border-amber-500/50');
             }
         }
 
@@ -571,7 +534,7 @@
                 navigator.getBattery().then(battery => {
                     const updateBattery = () => {
                         const level = Math.round(battery.level * 100);
-                        document.getElementById('header-battery').innerHTML = `<i class="fa-solid fa-battery-half mr-0.5"></i>${level}%${battery.charging ? '⚡' : ''}`;
+                        document.getElementById('header-battery').innerHTML = `<i class="fa-solid fa-battery-half mr-0.5"></i>${level}\%${battery.charging ? '⚡' : ''}`;
                     };
                     updateBattery();
                     battery.addEventListener('levelchange', updateBattery);
@@ -620,7 +583,6 @@
                 recognition.onresult = (e) => {
                     document.getElementById('user-input').value = e.results[0][0].transcript;
                     stopVoiceInput();
-                    if (v2vMode) handleSend();
                 };
                 recognition.onerror = () => stopVoiceInput();
                 recognition.onend = () => stopVoiceInput();
@@ -641,6 +603,7 @@
         }
 
         function toggleTTS() {
+            triggerHaptic();
             ttsEnabled = !ttsEnabled;
             document.getElementById('tts-toggle').classList.toggle('text-emerald-400');
             document.getElementById('tts-toggle').classList.toggle('text-gray-500');
@@ -651,15 +614,11 @@
             window.speechSynthesis.cancel();
             const plainText = text.replace(/[#*`_]/g, '');
             const utterance = new SpeechSynthesisUtterance(plainText);
-            if (v2vMode) {
-                utterance.onend = () => {
-                    setTimeout(() => toggleVoiceInput(), 500);
-                };
-            }
             window.speechSynthesis.speak(utterance);
         }
 
         function toggleConfigModal() {
+            triggerHaptic();
             document.getElementById('config-modal').classList.toggle('hidden');
         }
 
@@ -668,6 +627,7 @@
         }
 
         function saveConfig() {
+            triggerHaptic('success');
             apiKey = document.getElementById('groq-api-key').value.trim();
             systemPrompt = document.getElementById('custom-system-prompt').value.trim() || DEFAULT_SYSTEM_PROMPT;
             
@@ -683,14 +643,15 @@
                 const btn = document.createElement('div');
                 btn.className = `w-full p-2 rounded text-xs flex items-center justify-between border ${chat.id === activeChatId ? 'bg-emerald-950/60 border-emerald-600/50 text-emerald-300' : 'bg-[#0d1520] border-white/10 text-gray-400'}`;
                 btn.innerHTML = `
-                    <span class="truncate cursor-pointer flex-1" onclick="vibrate(10); switchChat(${chat.id})">${escapeHtml(chat.title)}</span>
-                    <button onclick="vibrate(15); deleteChat(${chat.id}, event)" class="text-gray-500 hover:text-red-400 ml-1.5"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                    <span class="truncate cursor-pointer flex-1" onclick="switchChat(${chat.id})">${escapeHtml(chat.title)}</span>
+                    <button onclick="deleteChat(${chat.id}, event)" class="text-gray-500 hover:text-red-400 ml-1.5"><i class="fa-solid fa-trash text-[10px]"></i></button>
                 `;
                 list.appendChild(btn);
             });
         }
 
         function createNewChat() {
+            triggerHaptic();
             const newId = Date.now();
             conversations.unshift({ id: newId, title: `Session #${conversations.length + 1}`, messages: [] });
             saveState();
@@ -700,6 +661,7 @@
 
         function deleteChat(id, e) {
             e.stopPropagation();
+            triggerHaptic();
             if (conversations.length <= 1) return;
             conversations = conversations.filter(c => c.id !== id);
             if (activeChatId === id) activeChatId = conversations[0].id;
@@ -708,6 +670,7 @@
         }
 
         function switchChat(id) {
+            triggerHaptic();
             activeChatId = id;
             renderHistory();
             const chat = conversations.find(c => c.id === id);
@@ -733,6 +696,7 @@
         }
 
         function clearCurrentChat() {
+            triggerHaptic();
             if (confirm("Clear all messages in current session?")) {
                 const chat = conversations.find(c => c.id === activeChatId);
                 if (chat) { chat.messages = []; saveState(); switchChat(activeChatId); }
@@ -740,6 +704,7 @@
         }
 
         function rebootMemory() {
+            triggerHaptic();
             if (confirm("Reboot total AI memory? All saved chats will be reset.")) {
                 conversations = [{ id: Date.now(), title: 'Session #1', messages: [] }];
                 activeChatId = conversations[0].id;
@@ -750,6 +715,7 @@
         }
 
         function loadTemplate(type) {
+            triggerHaptic();
             const input = document.getElementById('user-input');
             if (type === 'gen_image') {
                 toggleImageMode(true);
@@ -758,8 +724,6 @@
                 input.value = "Draft system architecture for high-throughput engine.";
             } else if (type === 'debug') {
                 input.value = "Analyze execution logs and pinpoint latency bottlenecks.";
-            } else if (type === 'sandbox') {
-                input.value = "Write a JavaScript code snippet calculating Fibonacci numbers up to 10 and printing results.";
             }
             closeSidebar();
         }
@@ -802,7 +766,6 @@
             renderMessage('assistant', imageUrl, false, 'image');
             chat.messages.push({ role: 'assistant', content: imageUrl, type: 'image' });
             saveState();
-            vibrate([20, 30, 20]);
         }
 
         async function sendMessage(apiPayload, userDisplayMsg) {
@@ -818,8 +781,7 @@
                 return;
             }
 
-            const streamWrapper = renderStreamingMessageContainer();
-            const textElement = streamWrapper.querySelector('.stream-text-target');
+            renderMessage('assistant', "Processing request...", true);
 
             const sysMsg = { role: "system", content: systemPrompt };
             const apiMessages = [sysMsg, ...chat.messages.filter(m => m.type !== 'image').map(m => ({ role: m.role, content: m.content }))];
@@ -831,75 +793,27 @@
                     body: JSON.stringify({
                         model: "openai/gpt-oss-120b",
                         messages: apiMessages,
-                        temperature: 0.7,
-                        stream: true
+                        temperature: 0.7
                     })
                 });
 
-                if (!response.ok) {
-                    const errData = await response.json();
-                    streamWrapper.remove();
-                    renderMessage('assistant', `API Error: ${errData.error ? errData.error.message : 'Invalid response'}`);
-                    return;
+                const data = await response.json();
+                removeLoadingBubble();
+
+                if (data.choices && data.choices[0]) {
+                    const aiReply = data.choices[0].message.content;
+                    renderMessage('assistant', aiReply);
+                    chat.messages.push({ role: 'assistant', content: aiReply, type: 'text' });
+                    saveState();
+                    speakText(aiReply);
+                    triggerHaptic('success');
+                } else {
+                    renderMessage('assistant', `API Error: ${data.error ? data.error.message : 'Invalid response'}`);
                 }
-
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder("utf-8");
-                let fullAiText = "";
-
-                textElement.classList.add('cursor-blink');
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-
-                    const chunk = decoder.decode(value, { stream: true });
-                    const lines = chunk.split("\n");
-
-                    for (const line of lines) {
-                        const trimmed = line.trim();
-                        if (trimmed.startsWith("data: ")) {
-                            const jsonStr = trimmed.replace(/^data:\s*/, "");
-                            if (jsonStr === "[DONE]") continue;
-
-                            try {
-                                const parsed = JSON.parse(jsonStr);
-                                const delta = parsed.choices[0]?.delta?.content || "";
-                                fullAiText += delta;
-                                textElement.innerHTML = marked.parse(fullAiText);
-                                attachCodeCopyAndRunButtons(textElement);
-                                scrollToBottom();
-                            } catch (e) {}
-                        }
-                    }
-                }
-
-                textElement.classList.remove('cursor-blink');
-                chat.messages.push({ role: 'assistant', content: fullAiText, type: 'text' });
-                saveState();
-                vibrate(15);
-                speakText(fullAiText);
-
             } catch (err) {
-                if (streamWrapper) streamWrapper.remove();
+                removeLoadingBubble();
                 renderMessage('assistant', `Network Error: ${err.message}`);
             }
-        }
-
-        function renderStreamingMessageContainer() {
-            const chatStream = document.getElementById('chat-stream');
-            const wrapper = document.createElement('div');
-            wrapper.className = 'flex items-start space-x-2 max-w-full';
-            wrapper.innerHTML = `
-                <div class="w-7 h-7 rounded bg-emerald-950 border border-emerald-600/40 flex items-center justify-center text-emerald-400 text-[10px] font-mono flex-shrink-0">AI</div>
-                <div class="bg-[#0b121a] border border-white/10 rounded-xl p-3 text-xs text-gray-300 space-y-1 theme-glow max-w-[88%] overflow-hidden">
-                    <p class="font-semibold text-emerald-400 font-mono text-[11px]"><span class="doom-highlight">D.o.o.m</span></p>
-                    <div class="stream-text-target prose prose-invert max-w-none text-xs leading-relaxed"></div>
-                </div>
-            `;
-            chatStream.appendChild(wrapper);
-            scrollToBottom();
-            return wrapper;
         }
 
         function renderApiKeyGuideMessage() {
@@ -934,6 +848,7 @@
                 `;
             } else {
                 wrapper.className = 'flex items-start space-x-2 max-w-full';
+                if (isLoading) wrapper.id = 'loading-bubble';
 
                 let bodyContent = '';
                 if (type === 'image') {
@@ -946,7 +861,7 @@
                     `;
                 } else {
                     const parsedMarkdown = marked.parse(text);
-                    bodyContent = `<div class="msg-text-box prose prose-invert max-w-none text-xs leading-relaxed">${parsedMarkdown}</div>`;
+                    bodyContent = `<div class="prose prose-invert max-w-none text-xs leading-relaxed">${parsedMarkdown}</div>`;
                 }
 
                 wrapper.innerHTML = `
@@ -959,40 +874,26 @@
             }
             chatStream.appendChild(wrapper);
 
-            const msgBox = wrapper.querySelector('.msg-text-box');
-            if (msgBox) attachCodeCopyAndRunButtons(msgBox);
-
-            scrollToBottom();
-        }
-
-        function attachCodeCopyAndRunButtons(targetContainer) {
-            targetContainer.querySelectorAll('pre code').forEach((block) => {
-                if (block.dataset.processed) return;
-                block.dataset.processed = "true";
-
-                hljs.highlightElement(block);
-
+            wrapper.querySelectorAll('pre code').forEach((block) => {
                 const container = document.createElement('div');
                 container.className = 'code-container';
                 
                 const lang = block.className.replace('hljs language-', '') || 'code';
                 const header = document.createElement('div');
                 header.className = 'code-header';
-
-                const isJs = lang === 'javascript' || lang === 'js';
-                const runBtnHtml = isJs ? `<button onclick="runJsCode(this)" class="text-amber-400 hover:text-amber-300 mr-2"><i class="fa-solid fa-play mr-1"></i>Run</button>` : '';
-
-                header.innerHTML = `<span>${lang}</span><div>${runBtnHtml}<button onclick="copyCode(this)" class="text-gray-400 hover:text-white"><i class="fa-regular fa-copy mr-1"></i>Copy</button></div>`;
+                header.innerHTML = `<span>${lang}</span><button onclick="copyCode(this)" class="text-gray-400 hover:text-white"><i class="fa-regular fa-copy mr-1"></i>Copy</button>`;
 
                 block.parentNode.parentNode.insertBefore(container, block.parentNode);
                 container.appendChild(header);
                 container.appendChild(block.parentNode);
             });
+
+            scrollToBottom();
         }
 
         function copyCode(btn) {
-            vibrate(10);
-            const code = btn.parentNode.parentNode.nextElementSibling.querySelector('code').innerText;
+            triggerHaptic();
+            const code = btn.parentNode.nextElementSibling.querySelector('code').innerText;
             navigator.clipboard.writeText(code).then(() => {
                 btn.innerHTML = '<i class="fa-solid fa-check mr-1 text-emerald-400"></i>Copied!';
                 setTimeout(() => {
@@ -1001,37 +902,9 @@
             });
         }
 
-        function runJsCode(btn) {
-            vibrate(15);
-            const code = btn.parentNode.parentNode.nextElementSibling.querySelector('code').innerText;
-            
-            let outputBox = btn.parentNode.parentNode.parentNode.querySelector('.js-output-box');
-            if (!outputBox) {
-                outputBox = document.createElement('div');
-                outputBox.className = 'js-output-box bg-[#05080c] border-t border-white/10 p-2 font-mono text-[10px] text-amber-300 space-y-1';
-                btn.parentNode.parentNode.parentNode.appendChild(outputBox);
-            }
-
-            outputBox.innerHTML = '<div class="text-gray-500"><i class="fa-solid fa-terminal mr-1"></i>Executing Code Sandbox...</div>';
-
-            let logs = [];
-            const originalLog = console.log;
-            console.log = function(...args) {
-                logs.push(args.map(a => typeof a === 'object' ? JSON.stringify(a) : a).join(' '));
-                originalLog.apply(console, args);
-            };
-
-            try {
-                const result = new Function(code)();
-                console.log = originalLog;
-                let logStr = logs.join('\n');
-                if (result !== undefined) logStr += (logStr ? '\nReturn: ' : 'Return: ') + result;
-                outputBox.innerHTML = `<div class="text-emerald-400 font-bold"><i class="fa-solid fa-check mr-1"></i>Output:</div><pre class="whitespace-pre-wrap">${escapeHtml(logStr || 'Executed successfully with no output.')}</pre>`;
-            } catch (err) {
-                console.log = originalLog;
-                outputBox.innerHTML = `<div class="text-red-400 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Execution Error:</div><pre class="whitespace-pre-wrap text-red-300">${escapeHtml(err.message)}</pre>`;
-            }
-            scrollToBottom();
+        function removeLoadingBubble() {
+            const el = document.getElementById('loading-bubble');
+            if (el) el.remove();
         }
 
         function saveState() {
@@ -1040,6 +913,7 @@
         }
 
         function exportChatLog() {
+            triggerHaptic();
             const chat = conversations.find(c => c.id === activeChatId);
             if (!chat) return;
             const logStr = JSON.stringify(chat, null, 2);
@@ -1058,7 +932,6 @@
         document.getElementById('user-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                vibrate(15);
                 handleSend();
             }
         });
