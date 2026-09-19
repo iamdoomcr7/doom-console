@@ -18,7 +18,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
-    <!-- PDF.js library for clean PDF text parsing -->
+    <!-- PDF.js library for PDF text parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <!-- Marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -33,50 +33,70 @@
             --bg-primary: #06090e;
             --bg-secondary: #090e15;
             --bg-card: #0b121a;
+            --bg-input: #0d1520;
             --border-color: rgba(16, 185, 129, 0.3);
             --accent-color: #10b981;
             --accent-glow: rgba(16, 185, 129, 0.15);
+            --text-primary: #e2e8f0;
             --text-accent: #34d399;
+            --user-msg-bg: rgba(6, 78, 59, 0.6);
+            --user-msg-border: rgba(16, 185, 129, 0.4);
         }
 
         body.theme-amber {
             --bg-primary: #0f0a05;
             --bg-secondary: #171008;
             --bg-card: #1f160c;
+            --bg-input: #291d10;
             --border-color: rgba(245, 158, 11, 0.3);
             --accent-color: #f59e0b;
             --accent-glow: rgba(245, 158, 11, 0.15);
+            --text-primary: #fef3c7;
             --text-accent: #fbbf24;
+            --user-msg-bg: rgba(120, 53, 15, 0.6);
+            --user-msg-border: rgba(245, 158, 11, 0.4);
         }
 
         body.theme-matrix {
             --bg-primary: #000a00;
             --bg-secondary: #001200;
             --bg-card: #001a00;
+            --bg-input: #002400;
             --border-color: rgba(34, 197, 94, 0.3);
             --accent-color: #22c55e;
             --accent-glow: rgba(34, 197, 94, 0.2);
+            --text-primary: #dcfce7;
             --text-accent: #4ade80;
+            --user-msg-bg: rgba(20, 83, 45, 0.6);
+            --user-msg-border: rgba(34, 197, 94, 0.4);
         }
 
         body.theme-dracula {
             --bg-primary: #0d0b18;
             --bg-secondary: #131024;
             --bg-card: #1a1630;
+            --bg-input: #231e42;
             --border-color: rgba(168, 85, 247, 0.3);
             --accent-color: #a855f7;
             --accent-glow: rgba(168, 85, 247, 0.15);
+            --text-primary: #f3e8ff;
             --text-accent: #c084fc;
+            --user-msg-bg: rgba(88, 28, 135, 0.6);
+            --user-msg-border: rgba(168, 85, 247, 0.4);
         }
 
-        body.theme-obsidian {
-            --bg-primary: #080c14;
-            --bg-secondary: #0d1320;
-            --bg-card: #121a2b;
-            --border-color: rgba(59, 130, 246, 0.3);
-            --accent-color: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.15);
-            --text-accent: #60a5fa;
+        body.theme-light {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --border-color: rgba(16, 185, 129, 0.4);
+            --accent-color: #059669;
+            --accent-glow: rgba(16, 185, 129, 0.1);
+            --text-primary: #0f172a;
+            --text-accent: #047857;
+            --user-msg-bg: rgba(209, 250, 229, 0.9);
+            --user-msg-border: rgba(16, 185, 129, 0.5);
         }
 
         html, body {
@@ -90,9 +110,20 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-primary);
-            color: #e2e8f0;
+            color: var(--text-primary);
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+
+        .theme-bg-main { background-color: var(--bg-primary); }
+        .theme-bg-sec { background-color: var(--bg-secondary); }
+        .theme-bg-card { background-color: var(--bg-card); }
+        .theme-bg-input { background-color: var(--bg-input); }
+        .theme-border { border-color: var(--border-color); }
+        .theme-text-accent { color: var(--text-accent); }
+        .theme-text-main { color: var(--text-primary); }
+        .theme-accent-bg { background-color: var(--accent-color); }
+        .theme-user-msg { background-color: var(--user-msg-bg); border-color: var(--user-msg-border); }
 
         .font-mono { font-family: 'JetBrains Mono', monospace; }
 
@@ -105,7 +136,7 @@
         .doom-highlight {
             font-weight: 700;
             color: var(--text-accent);
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
             padding: 2px 6px;
             border-radius: 4px;
             border: 1px solid var(--border-color);
@@ -116,7 +147,7 @@
             margin-bottom: 0.5rem;
             border-radius: 0.5rem;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
         }
         .code-header {
             background-color: #1e1e1e;
@@ -140,51 +171,51 @@
 <body class="h-[100dvh] flex flex-col overflow-hidden">
 
     <!-- Top Telemetry Header -->
-    <header class="border-b border-white/10 bg-[#090e15] px-3 py-2 flex flex-col space-y-1.5 z-20 flex-shrink-0">
+    <header class="border-b theme-border theme-bg-sec px-3 py-2 flex flex-col space-y-1.5 z-20 flex-shrink-0">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2">
-                <button onclick="toggleSidebar()" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-emerald-400 active:scale-95 flex items-center justify-center transition">
+                <button onclick="toggleSidebar()" class="w-8 h-8 rounded-lg theme-bg-card border theme-border theme-text-accent active:scale-95 flex items-center justify-center transition">
                     <i class="fa-solid fa-bars text-sm"></i>
                 </button>
                 <div class="flex items-center space-x-2">
-                    <div class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs theme-glow">
+                    <div class="w-7 h-7 rounded-lg theme-bg-card border theme-border flex items-center justify-center theme-text-accent text-xs theme-glow">
                         <i class="fa-solid fa-microchip"></i>
                     </div>
                     <div>
-                        <span class="text-sm font-bold text-emerald-400 tracking-wide block leading-none">D.o.o.m</span>
-                        <span class="text-[9px] font-mono text-gray-400 leading-none">gpt-oss-120b</span>
+                        <span class="text-sm font-bold theme-text-accent tracking-wide block leading-none">D.o.o.m</span>
+                        <span class="text-[9px] font-mono opacity-70 leading-none">gpt-oss-120b</span>
                     </div>
                 </div>
             </div>
 
             <div class="flex items-center space-x-1.5">
-                <button id="pwa-install-btn" onclick="installPWA()" class="hidden px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-mono flex items-center space-x-1 theme-glow active:scale-95 transition">
+                <button id="pwa-install-btn" onclick="installPWA()" class="hidden px-2.5 py-1.5 rounded-lg theme-accent-bg text-white text-xs font-mono flex items-center space-x-1 theme-glow active:scale-95 transition">
                     <i class="fa-solid fa-download text-[10px]"></i>
                     <span>Install</span>
                 </button>
-                <button id="tts-toggle" onclick="toggleTTS()" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-emerald-400 flex items-center justify-center text-xs">
+                <button id="tts-toggle" onclick="toggleTTS()" class="w-8 h-8 rounded-lg theme-bg-card border theme-border theme-text-accent flex items-center justify-center text-xs">
                     <i class="fa-solid fa-volume-high"></i>
                 </button>
-                <button onclick="toggleConfigModal()" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-700/50 text-emerald-300 text-xs font-mono flex items-center space-x-1">
+                <button onclick="toggleConfigModal()" class="px-2.5 py-1.5 rounded-lg theme-bg-card border theme-border theme-text-accent text-xs font-mono flex items-center space-x-1">
                     <i class="fa-solid fa-sliders text-[10px]"></i>
                     <span>Config</span>
                 </button>
             </div>
         </div>
 
-        <div class="bg-[#05080d] border border-white/10 rounded-lg py-1 px-2.5 flex items-center justify-between text-[10px] font-mono text-gray-300 overflow-x-auto space-x-2">
+        <div class="theme-bg-main border theme-border rounded-lg py-1 px-2.5 flex items-center justify-between text-[10px] font-mono opacity-80 overflow-x-auto space-x-2">
             <div class="flex items-center space-x-1 flex-shrink-0">
-                <i class="fa-regular fa-clock text-emerald-400"></i>
-                <span id="header-time" class="text-emerald-300 font-bold">--:--</span>
-                <span class="text-gray-600">|</span>
-                <span id="header-date" class="text-gray-400">--- --</span>
+                <i class="fa-regular fa-clock theme-text-accent"></i>
+                <span id="header-time" class="theme-text-accent font-bold">--:--</span>
+                <span class="opacity-40">|</span>
+                <span id="header-date" class="opacity-80">--- --</span>
             </div>
             <div class="flex items-center space-x-2 flex-shrink-0">
-                <span id="header-battery" class="text-emerald-400 font-bold"><i class="fa-solid fa-battery-half mr-0.5"></i>--%</span>
-                <span class="text-gray-600">|</span>
-                <span id="header-location" class="text-emerald-300"><i class="fa-solid fa-location-dot mr-0.5"></i>Detecting...</span>
-                <span class="text-gray-600">|</span>
-                <span id="header-weather" class="text-amber-300"><i class="fa-solid fa-cloud-sun mr-0.5"></i>--°C</span>
+                <span id="header-battery" class="theme-text-accent font-bold"><i class="fa-solid fa-battery-half mr-0.5"></i>--%</span>
+                <span class="opacity-40">|</span>
+                <span id="header-location" class="theme-text-accent"><i class="fa-solid fa-location-dot mr-0.5"></i>Detecting...</span>
+                <span class="opacity-40">|</span>
+                <span id="header-weather" class="text-amber-500"><i class="fa-solid fa-cloud-sun mr-0.5"></i>--°C</span>
             </div>
         </div>
     </header>
@@ -194,61 +225,62 @@
 
         <div id="sidebar-overlay" onclick="closeSidebar()" class="fixed inset-0 bg-black/70 backdrop-blur-xs z-30 opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
-        <aside id="sidebar" class="fixed top-0 bottom-0 left-0 w-72 bg-[#080d13] border-r border-white/10 flex flex-col justify-between z-40 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl">
-            <div class="p-3 border-b border-white/10 flex justify-between items-center bg-[#090e15]">
-                <span class="text-xs font-bold font-mono text-emerald-400"><i class="fa-solid fa-terminal mr-1.5"></i>CONSOLE MENU</span>
-                <button onclick="closeSidebar()" class="w-7 h-7 text-gray-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+        <aside id="sidebar" class="fixed top-0 bottom-0 left-0 w-72 theme-bg-sec border-r theme-border flex flex-col justify-between z-40 -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl">
+            <div class="p-3 border-b theme-border flex justify-between items-center theme-bg-card">
+                <span class="text-xs font-bold font-mono theme-text-accent"><i class="fa-solid fa-terminal mr-1.5"></i>CONSOLE MENU</span>
+                <button onclick="closeSidebar()" class="w-7 h-7 opacity-70 hover:opacity-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <div class="p-3 space-y-4 overflow-y-auto flex-1">
-                <button onclick="createNewChat()" class="w-full py-2.5 px-3 rounded-lg bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center justify-center space-x-2 transition active:scale-95 theme-glow">
+                <button onclick="createNewChat()" class="w-full py-2.5 px-3 rounded-lg theme-accent-bg text-white text-xs font-semibold flex items-center justify-center space-x-2 transition active:scale-95 theme-glow">
                     <i class="fa-solid fa-plus"></i>
                     <span>New Session</span>
                 </button>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-emerald-500/80 uppercase font-mono mb-1.5">Saved Chats</label>
+                    <label class="block text-[10px] font-bold theme-text-accent uppercase font-mono mb-1.5">Saved Chats</label>
                     <div id="chat-history-list" class="space-y-1"></div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-emerald-500/80 uppercase font-mono mb-1.5">Console Theme</label>
+                    <label class="block text-[10px] font-bold theme-text-accent uppercase font-mono mb-1.5">Console Theme</label>
                     <div class="grid grid-cols-2 gap-1.5 text-xs">
                         <button onclick="setTheme('emerald')" class="p-1.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-[10px] font-mono text-left">Emerald</button>
                         <button onclick="setTheme('amber')" class="p-1.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-400 text-[10px] font-mono text-left">Amber</button>
                         <button onclick="setTheme('matrix')" class="p-1.5 rounded bg-green-950/60 border border-green-500/40 text-green-400 text-[10px] font-mono text-left">Matrix</button>
                         <button onclick="setTheme('dracula')" class="p-1.5 rounded bg-purple-950/60 border border-purple-500/40 text-purple-400 text-[10px] font-mono text-left">Dracula</button>
+                        <button onclick="setTheme('light')" class="p-1.5 rounded bg-slate-200 border border-slate-400 text-slate-800 text-[10px] font-mono text-left col-span-2">Light Mode ☀️</button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-emerald-500/80 uppercase font-mono mb-1.5">Quick Prompts</label>
+                    <label class="block text-[10px] font-bold theme-text-accent uppercase font-mono mb-1.5">Quick Prompts</label>
                     <div class="space-y-1">
-                        <button onclick="loadTemplate('gen_image')" class="w-full text-left p-2 rounded bg-[#0d1520] border border-white/5 text-xs text-emerald-300 truncate"><i class="fa-solid fa-image mr-1"></i>Generate Cyberpunk Art</button>
-                        <button onclick="loadTemplate('architecture')" class="w-full text-left p-2 rounded bg-[#0d1520] border border-white/5 text-xs text-gray-300 truncate">System Architecture</button>
-                        <button onclick="loadTemplate('debug')" class="w-full text-left p-2 rounded bg-[#0d1520] border border-white/5 text-xs text-gray-300 truncate">Root Cause Debugger</button>
+                        <button onclick="loadTemplate('gen_image')" class="w-full text-left p-2 rounded theme-bg-card border theme-border text-xs theme-text-accent truncate"><i class="fa-solid fa-image mr-1"></i>Generate Cyberpunk Art</button>
+                        <button onclick="loadTemplate('architecture')" class="w-full text-left p-2 rounded theme-bg-card border theme-border text-xs opacity-90 truncate">System Architecture</button>
+                        <button onclick="loadTemplate('debug')" class="w-full text-left p-2 rounded theme-bg-card border theme-border text-xs opacity-90 truncate">Root Cause Debugger</button>
                     </div>
                 </div>
             </div>
 
-            <div class="p-3 border-t border-white/10 bg-[#06090e] space-y-2">
+            <div class="p-3 border-t theme-border theme-bg-main space-y-2">
                 <button onclick="rebootMemory()" class="w-full py-1.5 rounded bg-red-950/40 border border-red-800/40 text-red-400 text-xs flex items-center justify-center space-x-1.5 active:scale-95 transition">
                     <i class="fa-solid fa-rotate-right text-[10px]"></i>
                     <span>Reboot Memory</span>
                 </button>
-                <div class="flex justify-between items-center text-[10px] font-mono text-gray-400">
+                <div class="flex justify-between items-center text-[10px] font-mono opacity-70">
                     <span>CREATOR</span>
-                    <span class="text-emerald-400 font-bold">Atharva</span>
+                    <span class="theme-text-accent font-bold">Atharva</span>
                 </div>
             </div>
         </aside>
 
         <!-- Chat Stream Workspace -->
-        <main class="flex-1 flex flex-col bg-[#06090e] overflow-hidden w-full h-full justify-between">
-            <div class="border-b border-white/10 bg-[#090e15] px-3 py-2 flex items-center justify-between text-xs flex-shrink-0">
+        <main class="flex-1 flex flex-col theme-bg-main overflow-hidden w-full h-full justify-between">
+            <div class="border-b theme-border theme-bg-sec px-3 py-2 flex items-center justify-between text-xs flex-shrink-0">
                 <div class="flex items-center space-x-1.5 min-w-0 pr-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
-                    <span id="current-chat-title" class="font-mono text-emerald-300 text-xs font-semibold truncate">Session #1</span>
+                    <span class="w-2 h-2 rounded-full theme-accent-bg animate-pulse flex-shrink-0"></span>
+                    <span id="current-chat-title" class="font-mono theme-text-accent text-xs font-semibold truncate">Session #1</span>
                 </div>
                 
                 <div class="flex items-center space-x-2 flex-shrink-0">
@@ -256,7 +288,7 @@
                         <i class="fa-solid fa-broom text-[10px]"></i>
                         <span>Clear</span>
                     </button>
-                    <button onclick="exportChatLog()" class="px-2.5 py-1 rounded bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 hover:bg-emerald-900/60 active:scale-95 text-[11px] font-mono flex items-center space-x-1 transition">
+                    <button onclick="exportChatLog()" class="px-2.5 py-1 rounded theme-bg-card border theme-border theme-text-accent hover:bg-black/20 active:scale-95 text-[11px] font-mono flex items-center space-x-1 transition">
                         <i class="fa-solid fa-file-export text-[10px]"></i>
                         <span>Export</span>
                     </button>
@@ -266,46 +298,46 @@
             <!-- Message Stream Area -->
             <div id="chat-stream" class="flex-1 overflow-y-auto p-3 space-y-3 min-h-0">
                 <div class="flex items-start space-x-2 max-w-full">
-                    <div class="w-7 h-7 rounded bg-emerald-950 border border-emerald-600/40 flex items-center justify-center text-emerald-400 text-[10px] font-mono flex-shrink-0">AI</div>
-                    <div class="bg-[#0b121a] border border-white/10 rounded-xl p-3 text-xs text-gray-300 space-y-1.5 theme-glow">
-                        <p class="font-semibold text-emerald-400 font-mono text-[11px]">MOBILE CONSOLE ONLINE</p>
-                        <p>Welcome. I am <span class="doom-highlight">D.o.o.m</span>, created by <span class="font-mono text-emerald-300 font-bold">Atharva</span>.</p>
-                        <p class="text-[11px] text-gray-400"><i class="fa-solid fa-paperclip text-emerald-400 mr-1"></i>Attach PDFs/Files, generate images, or ask questions!</p>
+                    <div class="w-7 h-7 rounded theme-bg-card border theme-border flex items-center justify-center theme-text-accent text-[10px] font-mono flex-shrink-0">AI</div>
+                    <div class="theme-bg-card border theme-border rounded-xl p-3 text-xs opacity-90 space-y-1.5 theme-glow">
+                        <p class="font-semibold theme-text-accent font-mono text-[11px]">MOBILE CONSOLE ONLINE</p>
+                        <p>Welcome. I am <span class="doom-highlight">D.o.o.m</span>, created by <span class="font-mono theme-text-accent font-bold">Atharva</span>.</p>
+                        <p class="text-[11px] opacity-70"><i class="fa-solid fa-paperclip theme-text-accent mr-1"></i>Attach PDFs/Files, generate images, or ask questions!</p>
                     </div>
                 </div>
             </div>
 
-            <div id="attachment-preview-bar" class="hidden px-3 py-1.5 bg-[#080d14] border-t border-white/10 flex items-center justify-between text-xs font-mono text-emerald-400 flex-shrink-0">
+            <div id="attachment-preview-bar" class="hidden px-3 py-1.5 theme-bg-sec border-t theme-border flex items-center justify-between text-xs font-mono theme-text-accent flex-shrink-0">
                 <div class="flex items-center space-x-2 truncate">
                     <i class="fa-solid fa-file-lines text-xs"></i>
                     <span id="attached-filename" class="truncate text-[11px]">filename.pdf</span>
                 </div>
-                <button onclick="removeAttachment()" class="text-gray-400 hover:text-white ml-2"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="removeAttachment()" class="opacity-70 hover:opacity-100 ml-2"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <!-- Pinned Mobile Input Bar -->
-            <div id="input-bar-container" class="p-2.5 bg-[#090e15] border-t border-white/10 space-y-2 sticky bottom-0 z-30 flex-shrink-0">
-                <div id="image-mode-badge" class="hidden flex items-center justify-between bg-emerald-950/80 border border-emerald-600/50 px-2.5 py-1 rounded-lg text-[10px] font-mono text-emerald-300">
+            <div id="input-bar-container" class="p-2.5 theme-bg-sec border-t theme-border space-y-2 sticky bottom-0 z-30 flex-shrink-0">
+                <div id="image-mode-badge" class="hidden flex items-center justify-between theme-bg-card border theme-border px-2.5 py-1 rounded-lg text-[10px] font-mono theme-text-accent">
                     <span><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Image Mode Active</span>
-                    <button onclick="toggleImageMode(false)" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="toggleImageMode(false)" class="opacity-70 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
                 <div class="relative flex items-center">
-                    <textarea id="user-input" rows="1" placeholder="Query D.o.o.m or attach PDF..." class="w-full bg-[#0d1520] border border-white/10 rounded-xl p-2.5 pr-32 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-emerald-500 resize-none" onfocus="scrollToBottom()"></textarea>
+                    <textarea id="user-input" rows="1" placeholder="Query D.o.o.m or attach PDF..." class="w-full theme-bg-input border theme-border rounded-xl p-2.5 pr-32 text-xs theme-text-main placeholder-gray-500 focus:outline-none resize-none" onfocus="scrollToBottom()"></textarea>
                     
                     <input type="file" id="file-input" class="hidden" accept=".pdf,.txt,.json,.js,.py,.csv" onchange="handleFileSelect(event)">
 
                     <div class="absolute right-2 flex items-center space-x-1">
-                        <button onclick="triggerHaptic(); document.getElementById('file-input').click()" title="Attach File/PDF" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-800/60 text-emerald-400 flex items-center justify-center text-xs">
+                        <button onclick="triggerHaptic(); document.getElementById('file-input').click()" title="Attach File/PDF" class="w-7 h-7 rounded-lg theme-bg-card border theme-border theme-text-accent flex items-center justify-center text-xs">
                             <i class="fa-solid fa-paperclip"></i>
                         </button>
-                        <button id="img-mode-btn" onclick="triggerHaptic(); toggleImageMode()" title="Generate Image" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-800/60 text-emerald-400 flex items-center justify-center text-xs">
+                        <button id="img-mode-btn" onclick="triggerHaptic(); toggleImageMode()" title="Generate Image" class="w-7 h-7 rounded-lg theme-bg-card border theme-border theme-text-accent flex items-center justify-center text-xs">
                             <i class="fa-solid fa-image"></i>
                         </button>
-                        <button id="mic-btn" onclick="triggerHaptic(); toggleVoiceInput()" class="w-7 h-7 rounded-lg bg-emerald-950 border border-emerald-700/50 text-emerald-400 flex items-center justify-center text-xs">
+                        <button id="mic-btn" onclick="triggerHaptic(); toggleVoiceInput()" class="w-7 h-7 rounded-lg theme-bg-card border theme-border theme-text-accent flex items-center justify-center text-xs">
                             <i id="mic-icon" class="fa-solid fa-microphone"></i>
                         </button>
-                        <button onclick="triggerHaptic(); handleSend()" class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs theme-glow">
+                        <button onclick="triggerHaptic(); handleSend()" class="w-7 h-7 rounded-lg theme-accent-bg text-white flex items-center justify-center text-xs theme-glow">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
                     </div>
@@ -316,30 +348,30 @@
 
     <!-- Config Modal -->
     <div id="config-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xs hidden flex items-center justify-center z-50 p-3">
-        <div class="bg-[#0c131d] border border-emerald-700/40 rounded-xl w-full max-w-sm p-4 space-y-3 theme-glow text-xs">
-            <div class="flex justify-between items-center border-b border-white/10 pb-2">
-                <h3 class="font-semibold text-emerald-400 uppercase font-mono text-xs"><i class="fa-solid fa-sliders mr-1"></i>D.o.o.m Configuration</h3>
-                <button onclick="toggleConfigModal()" class="text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+        <div class="theme-bg-card border theme-border rounded-xl w-full max-w-sm p-4 space-y-3 theme-glow text-xs">
+            <div class="flex justify-between items-center border-b theme-border pb-2">
+                <h3 class="font-semibold theme-text-accent uppercase font-mono text-xs"><i class="fa-solid fa-sliders mr-1"></i>D.o.o.m Configuration</h3>
+                <button onclick="toggleConfigModal()" class="opacity-70"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
             <div class="space-y-2.5">
                 <div>
-                    <label class="block text-gray-400 font-mono text-[11px] mb-1">Groq API Key</label>
-                    <input id="groq-api-key" type="password" placeholder="gsk_..." class="w-full bg-[#070b10] border border-white/10 rounded p-2 text-gray-200 font-mono focus:outline-none focus:border-emerald-500">
+                    <label class="block opacity-70 font-mono text-[11px] mb-1">Groq API Key</label>
+                    <input id="groq-api-key" type="password" placeholder="gsk_..." class="w-full theme-bg-input border theme-border rounded p-2 theme-text-main font-mono focus:outline-none">
                 </div>
 
                 <div>
                     <div class="flex justify-between items-center mb-1">
-                        <label class="block text-gray-400 font-mono text-[11px]">Custom System Prompt</label>
-                        <button onclick="resetSystemPrompt()" class="text-[10px] text-emerald-400 font-mono underline">Reset Default</button>
+                        <label class="block opacity-70 font-mono text-[11px]">Custom System Prompt</label>
+                        <button onclick="resetSystemPrompt()" class="text-[10px] theme-text-accent font-mono underline">Reset Default</button>
                     </div>
-                    <textarea id="custom-system-prompt" rows="4" class="w-full bg-[#070b10] border border-white/10 rounded p-2 text-gray-200 font-mono text-[11px] focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+                    <textarea id="custom-system-prompt" rows="4" class="w-full theme-bg-input border theme-border rounded p-2 theme-text-main font-mono text-[11px] focus:outline-none resize-none"></textarea>
                 </div>
             </div>
 
-            <div class="flex justify-between items-center pt-2 border-t border-white/10">
-                <a href="https://console.groq.com/keys" target="_blank" class="text-emerald-400 underline text-[11px]">Get Free Key</a>
-                <button onclick="saveConfig()" class="px-3 py-1 rounded bg-emerald-600 text-white text-xs font-medium theme-glow">
+            <div class="flex justify-between items-center pt-2 border-t theme-border">
+                <a href="https://console.groq.com/keys" target="_blank" class="theme-text-accent underline text-[11px]">Get Free Key</a>
+                <button onclick="saveConfig()" class="px-3 py-1 rounded theme-accent-bg text-white text-xs font-medium theme-glow">
                     Save Changes
                 </button>
             </div>
@@ -400,7 +432,6 @@
             }
         }
 
-        // Visual Viewport Keyboard Adjustment for Mobile Devices
         if (window.visualViewport) {
             window.visualViewport.addEventListener('resize', () => {
                 document.body.style.height = `${window.visualViewport.height}px`;
@@ -411,8 +442,8 @@
         document.getElementById('groq-api-key').value = apiKey;
         document.getElementById('custom-system-prompt').value = systemPrompt;
         
-        const savedTheme = localStorage.getItem('doom_theme');
-        if (savedTheme) setTheme(savedTheme);
+        const savedTheme = localStorage.getItem('doom_theme') || 'emerald';
+        setTheme(savedTheme);
 
         renderHistory();
         initFrontHeaderTelemetry();
@@ -463,10 +494,10 @@
 
             if (isImageMode) {
                 badge.classList.remove('hidden');
-                btn.classList.add('bg-emerald-600', 'text-white');
+                btn.classList.add('theme-accent-bg', 'text-white');
             } else {
                 badge.classList.add('hidden');
-                btn.classList.remove('bg-emerald-600', 'text-white');
+                btn.classList.remove('theme-accent-bg', 'text-white');
             }
         }
 
@@ -477,24 +508,31 @@
             if (file.type === 'application/pdf') {
                 try {
                     const arrayBuffer = await file.arrayBuffer();
-                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                    let textContent = '';
+                    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                    const pdf = await loadingTask.promise;
+                    let fullText = '';
                     
                     for (let i = 1; i <= pdf.numPages; i++) {
                         const page = await pdf.getPage(i);
-                        const content = await page.getTextContent();
-                        const pageStrings = content.items.map(item => item.str);
-                        textContent += `--- Page ${i} ---\n` + pageStrings.join(' ') + '\n\n';
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(' ');
+                        fullText += `--- PAGE ${i} ---\n${pageText}\n\n`;
+                    }
+
+                    if (!fullText.trim()) {
+                        alert("This PDF appears to be a scanned image or contains non-extractable text.");
+                        return;
                     }
 
                     currentAttachment = {
                         name: file.name,
                         type: 'pdf',
-                        content: textContent
+                        content: fullText.substring(0, 15000)
                     };
                     showAttachmentBadge(file.name);
+                    triggerHaptic('success');
                 } catch (err) {
-                    alert('Error parsing PDF text: ' + err.message);
+                    alert('Error parsing PDF: ' + err.message);
                 }
             } else {
                 const reader = new FileReader();
@@ -502,9 +540,10 @@
                     currentAttachment = {
                         name: file.name,
                         type: 'text',
-                        content: event.target.result
+                        content: event.target.result.substring(0, 15000)
                     };
                     showAttachmentBadge(file.name);
+                    triggerHaptic('success');
                 };
                 reader.readAsText(file);
             }
@@ -605,8 +644,8 @@
         function toggleTTS() {
             triggerHaptic();
             ttsEnabled = !ttsEnabled;
-            document.getElementById('tts-toggle').classList.toggle('text-emerald-400');
-            document.getElementById('tts-toggle').classList.toggle('text-gray-500');
+            document.getElementById('tts-toggle').classList.toggle('theme-text-accent');
+            document.getElementById('tts-toggle').classList.toggle('opacity-40');
         }
 
         function speakText(text) {
@@ -641,10 +680,10 @@
             list.innerHTML = '';
             conversations.forEach(chat => {
                 const btn = document.createElement('div');
-                btn.className = `w-full p-2 rounded text-xs flex items-center justify-between border ${chat.id === activeChatId ? 'bg-emerald-950/60 border-emerald-600/50 text-emerald-300' : 'bg-[#0d1520] border-white/10 text-gray-400'}`;
+                btn.className = `w-full p-2 rounded text-xs flex items-center justify-between border ${chat.id === activeChatId ? 'theme-bg-card theme-border theme-text-accent' : 'theme-bg-sec theme-border opacity-70'}`;
                 btn.innerHTML = `
                     <span class="truncate cursor-pointer flex-1" onclick="switchChat(${chat.id})">${escapeHtml(chat.title)}</span>
-                    <button onclick="deleteChat(${chat.id}, event)" class="text-gray-500 hover:text-red-400 ml-1.5"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                    <button onclick="deleteChat(${chat.id}, event)" class="opacity-50 hover:opacity-100 hover:text-red-400 ml-1.5"><i class="fa-solid fa-trash text-[10px]"></i></button>
                 `;
                 list.appendChild(btn);
             });
@@ -682,14 +721,14 @@
             if (chat.messages.length === 0) {
                 chatStream.innerHTML = `
                     <div class="flex items-start space-x-2 max-w-full">
-                        <div class="w-7 h-7 rounded bg-emerald-950 border border-emerald-600/40 flex items-center justify-center text-emerald-400 text-[10px] font-mono flex-shrink-0">AI</div>
-                        <div class="bg-[#0b121a] border border-white/10 rounded-xl p-3 text-xs text-gray-300 space-y-1 theme-glow">
-                            <p class="font-semibold text-emerald-400 font-mono text-[11px]">NEW SESSION</p>
+                        <div class="w-7 h-7 rounded theme-bg-card border theme-border flex items-center justify-center theme-text-accent text-[10px] font-mono flex-shrink-0">AI</div>
+                        <div class="theme-bg-card border theme-border rounded-xl p-3 text-xs opacity-90 space-y-1 theme-glow">
+                            <p class="font-semibold theme-text-accent font-mono text-[11px]">NEW SESSION</p>
                             <p>Query <span class="doom-highlight">D.o.o.m</span> or attach PDF files.</p>
                         </div>
                     </div>`;
             } else {
-                chat.messages.forEach(msg => renderMessage(msg.role, msg.content, false, msg.type));
+                chat.messages.forEach(msg => renderMessage(msg.role, msg.displayContent || msg.content, false, msg.type));
             }
             closeSidebar();
             scrollToBottom();
@@ -761,7 +800,9 @@
             renderMessage('user', `Generate image: ${prompt}`);
             chat.messages.push({ role: 'user', content: `Generate image: ${prompt}`, type: 'text' });
 
-            const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=768&height=768&nologo=true&seed=${Math.floor(Math.random() * 1000000)}`;
+            const enhancedPrompt = `${prompt}, highly detailed, 8k resolution, cinematic lighting, masterpiece, photorealistic`;
+            const seed = Math.floor(Math.random() * 10000000);
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?width=1024&height=1024&seed=${seed}&nologo=true&enhance=true`;
 
             renderMessage('assistant', imageUrl, false, 'image');
             chat.messages.push({ role: 'assistant', content: imageUrl, type: 'image' });
@@ -821,11 +862,11 @@
             const wrapper = document.createElement('div');
             wrapper.className = 'flex items-start space-x-2 max-w-full';
             wrapper.innerHTML = `
-                <div class="w-7 h-7 rounded bg-emerald-950 border border-emerald-600/40 flex items-center justify-center text-emerald-400 text-[10px] font-mono flex-shrink-0">AI</div>
-                <div class="bg-[#0b121a] border border-amber-800/60 rounded-xl p-3 text-xs text-gray-300 space-y-2">
-                    <p class="font-semibold text-amber-400 font-mono text-[11px]"><i class="fa-solid fa-key mr-1"></i>GROQ API KEY REQUIRED</p>
+                <div class="w-7 h-7 rounded theme-bg-card border theme-border flex items-center justify-center theme-text-accent text-[10px] font-mono flex-shrink-0">AI</div>
+                <div class="theme-bg-card border border-amber-800/60 rounded-xl p-3 text-xs space-y-2">
+                    <p class="font-semibold text-amber-500 font-mono text-[11px]"><i class="fa-solid fa-key mr-1"></i>GROQ API KEY REQUIRED</p>
                     <p>Provide your Groq Key in Config to activate <span class="doom-highlight">D.o.o.m</span>.</p>
-                    <button onclick="toggleConfigModal()" class="px-2.5 py-1 rounded bg-emerald-600 text-white text-xs font-mono">
+                    <button onclick="toggleConfigModal()" class="px-2.5 py-1 rounded theme-accent-bg text-white text-xs font-mono">
                         Set Key
                     </button>
                 </div>
@@ -841,10 +882,10 @@
             if (role === 'user') {
                 wrapper.className = 'flex items-start justify-end space-x-2 max-w-full ml-auto';
                 wrapper.innerHTML = `
-                    <div class="bg-emerald-950/60 border border-emerald-700/40 rounded-xl p-3 text-xs text-emerald-100 whitespace-pre-wrap">
+                    <div class="theme-user-msg border rounded-xl p-3 text-xs whitespace-pre-wrap">
                         <p>${escapeHtml(text)}</p>
                     </div>
-                    <div class="w-7 h-7 rounded bg-emerald-800 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">YOU</div>
+                    <div class="w-7 h-7 rounded theme-accent-bg flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">YOU</div>
                 `;
             } else {
                 wrapper.className = 'flex items-start space-x-2 max-w-full';
@@ -853,11 +894,11 @@
                 let bodyContent = '';
                 if (type === 'image') {
                     bodyContent = `
-                        <p class="text-[10px] text-emerald-400 font-mono mb-1"><i class="fa-solid fa-image mr-1"></i>Generated Image:</p>
-                        <div class="rounded-lg overflow-hidden border border-white/10 mt-1">
+                        <p class="text-[10px] theme-text-accent font-mono mb-1"><i class="fa-solid fa-image mr-1"></i>Generated Image:</p>
+                        <div class="rounded-lg overflow-hidden border theme-border mt-1">
                             <img src="${text}" alt="Generated image" class="w-full h-auto object-cover" loading="lazy" onload="scrollToBottom()">
                         </div>
-                        <a href="${text}" target="_blank" download="doom_art.jpg" class="inline-block mt-1.5 text-[10px] font-mono text-emerald-400 underline"><i class="fa-solid fa-download mr-1"></i>Save Image</a>
+                        <a href="${text}" target="_blank" download="doom_art.jpg" class="inline-block mt-1.5 text-[10px] font-mono theme-text-accent underline"><i class="fa-solid fa-download mr-1"></i>Save Image</a>
                     `;
                 } else {
                     const parsedMarkdown = marked.parse(text);
@@ -865,9 +906,9 @@
                 }
 
                 wrapper.innerHTML = `
-                    <div class="w-7 h-7 rounded bg-emerald-950 border border-emerald-600/40 flex items-center justify-center text-emerald-400 text-[10px] font-mono flex-shrink-0">AI</div>
-                    <div class="bg-[#0b121a] border border-white/10 rounded-xl p-3 text-xs text-gray-300 space-y-1 theme-glow max-w-[88%] overflow-hidden">
-                        <p class="font-semibold text-emerald-400 font-mono text-[11px]"><span class="doom-highlight">D.o.o.m</span></p>
+                    <div class="w-7 h-7 rounded theme-bg-card border theme-border flex items-center justify-center theme-text-accent text-[10px] font-mono flex-shrink-0">AI</div>
+                    <div class="theme-bg-card border theme-border rounded-xl p-3 text-xs opacity-90 space-y-1 theme-glow max-w-[88%] overflow-hidden">
+                        <p class="font-semibold theme-text-accent font-mono text-[11px]"><span class="doom-highlight">D.o.o.m</span></p>
                         ${bodyContent}
                     </div>
                 `;
@@ -881,7 +922,7 @@
                 const lang = block.className.replace('hljs language-', '') || 'code';
                 const header = document.createElement('div');
                 header.className = 'code-header';
-                header.innerHTML = `<span>${lang}</span><button onclick="copyCode(this)" class="text-gray-400 hover:text-white"><i class="fa-regular fa-copy mr-1"></i>Copy</button>`;
+                header.innerHTML = `<span>${lang}</span><button onclick="copyCode(this)" class="opacity-70 hover:opacity-100"><i class="fa-regular fa-copy mr-1"></i>Copy</button>`;
 
                 block.parentNode.parentNode.insertBefore(container, block.parentNode);
                 container.appendChild(header);
@@ -895,7 +936,7 @@
             triggerHaptic();
             const code = btn.parentNode.nextElementSibling.querySelector('code').innerText;
             navigator.clipboard.writeText(code).then(() => {
-                btn.innerHTML = '<i class="fa-solid fa-check mr-1 text-emerald-400"></i>Copied!';
+                btn.innerHTML = '<i class="fa-solid fa-check mr-1 theme-text-accent"></i>Copied!';
                 setTimeout(() => {
                     btn.innerHTML = '<i class="fa-regular fa-copy mr-1"></i>Copy';
                 }, 2000);
