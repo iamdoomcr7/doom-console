@@ -208,7 +208,7 @@
                     <span>Install</span>
                 </button>
                 <button id="tts-toggle" onclick="toggleTTS()" class="w-8 h-8 rounded-lg theme-bg-card border theme-border theme-text-accent flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-volume-high"></i>
+                    <i id="tts-icon" class="fa-solid fa-volume-high"></i>
                 </button>
                 <button onclick="toggleConfigModal()" class="px-2.5 py-1.5 rounded-lg theme-bg-card border theme-border theme-text-accent text-xs font-mono flex items-center space-x-1">
                     <i class="fa-solid fa-sliders text-[10px]"></i>
@@ -588,7 +588,7 @@
                 navigator.getBattery().then(battery => {
                     const updateBattery = () => {
                         const level = Math.round(battery.level * 100);
-                        document.getElementById('header-battery').innerHTML = `<i class="fa-solid fa-battery-half mr-0.5"></i>${level}\%${battery.charging ? '⚡' : ''}`;
+                        document.getElementById('header-battery').innerHTML = `<i class="fa-solid fa-battery-half mr-0.5"></i>${level}%${battery.charging ? '⚡' : ''}`;
                     };
                     updateBattery();
                     battery.addEventListener('levelchange', updateBattery);
@@ -659,15 +659,40 @@
         function toggleTTS() {
             triggerHaptic();
             ttsEnabled = !ttsEnabled;
-            document.getElementById('tts-toggle').classList.toggle('theme-text-accent');
-            document.getElementById('tts-toggle').classList.toggle('opacity-40');
+            const btn = document.getElementById('tts-toggle');
+            const icon = document.getElementById('tts-icon');
+
+            if (!ttsEnabled) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                }
+                btn.classList.add('opacity-40');
+                btn.classList.remove('theme-text-accent');
+                icon.className = 'fa-solid fa-volume-xmark';
+            } else {
+                btn.classList.remove('opacity-40');
+                btn.classList.add('theme-text-accent');
+                icon.className = 'fa-solid fa-volume-high';
+            }
         }
 
         function speakText(text) {
             if (!ttsEnabled || !('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
-            const plainText = text.replace(/[#*`_]/g, '');
-            const utterance = new SpeechSynthesisUtterance(plainText);
+            
+            // Clean markdown syntax, code blocks, URLs, and vocalized punctuation like asterisks, dashes, commas, etc.
+            let cleanText = text
+                .replace(/```[\s\S]*?```/g, '') // remove code blocks
+                .replace(/`([^`]+)`/g, '$1')     // inline code
+                .replace(/https?:\/\/\S+/g, '')  // links
+                .replace(/[#*`_~=\-\+\\\/\|\[\]\(\)\{\}<>]/g, ' ') // markdown symbols & punctuation
+                .replace(/,/g, ' ')               // remove commas so TTS doesn't say "comma"
+                .replace(/\s+/g, ' ')            // normalize whitespace
+                .trim();
+
+            if (!cleanText) return;
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
             window.speechSynthesis.speak(utterance);
         }
 
